@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root{--papel:#f8f3e8;--claro:#fffcf4;--tinta:#182c34;--suave:#4f5b57;--linea:#b9b5a5;--acento:#9a3d28;--teal:#174b44;--ambar:#794411;--sans:var(--type-sans),sans-serif;--serif:var(--type-serif),Georgia,serif}
+@theme inline{--font-sans:var(--sans);--font-serif:var(--serif)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papel);color:var(--tinta);font-family:var(--sans);font-variant-numeric:tabular-nums;min-height:100dvh;display:flex;flex-direction:column}
+h1,h2,h3,p,figure{margin:0}
+h1,h2,h3{font-weight:400}
+h1,h2{font-family:var(--serif);line-height:.98}
+h1{font-size:clamp(3.3rem,8.4vw,7.1rem);letter-spacing:-.035em}
+h2{font-size:clamp(2rem,4.7vw,3.2rem)}
+h3{font-size:1.13rem;font-weight:690}
+p{line-height:1.55}
+a,button,input,select,textarea{touch-action:manipulation}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--acento);outline-offset:4px}
+button:disabled{opacity:.58;cursor:wait}
+label{display:grid;gap:.38rem;font-size:.84rem;font-weight:700}
+input,select,textarea{border:1px solid #8f9688;background:var(--claro);min-height:44px;color:var(--tinta);padding:.55rem .68rem;width:100%;min-width:0;font-size:1rem;font-weight:440;border-radius:2px}
+textarea{resize:vertical}
+fieldset{min-width:0}
+.marco{width:min(1250px,calc(100% - 64px));margin-inline:auto}
+.cabecera{background:var(--claro);border-bottom:1px solid var(--linea)}
+.cabecera-fila,.pie-fila{display:flex;justify-content:space-between;align-items:center;gap:1.1rem}
+.cabecera-fila{min-height:76px}
+.logo{display:block;width:209px;height:auto}
+.marca-tipo{font-family:var(--serif)}
+.nav-sitio{display:flex;gap:clamp(1rem,3vw,2.4rem);font-size:.85rem;font-weight:690;align-items:center}
+.nav-sitio a{padding:.7rem 0;text-underline-offset:5px}
+.nav-sitio a:hover,.enlace:hover{text-decoration:underline}
+.nav-sitio span{color:var(--acento)}
+.salto{position:absolute;left:12px;top:12px;z-index:10;transform:translateY(-160%);padding:.6rem;background:var(--claro)}
+.salto:focus{transform:none}
+.solo-lectores{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}
+.inicio{padding-top:1.4rem}
+.linea-edicion,.micro{font-family:var(--sans);font-weight:730;letter-spacing:.135em;font-size:.68rem;text-transform:uppercase}
+.linea-edicion{border-bottom:1px solid var(--linea);padding:.25rem 0 .62rem;display:flex;justify-content:space-between;gap:1rem;color:var(--suave)}
+.acento{color:var(--acento)}
+.portada{display:grid;grid-template-columns:1.15fr .92fr;gap:clamp(1.7rem,5vw,5rem);align-items:center;padding:clamp(1.8rem,4vw,3.25rem) 0 1.85rem}
+.portada-texto{min-width:0}
+.portada h1{margin:.65rem 0 1.2rem}
+.portada h1 em{color:var(--acento);font-weight:400}
+.bajada{max-width:43ch;color:var(--suave);font-size:clamp(.96rem,1.6vw,1.08rem)}
+.puertas{display:flex;flex-wrap:wrap;gap:.55rem 1.45rem;margin-top:1.45rem;font-size:.79rem}
+.puertas b{letter-spacing:.09em;font-size:.73rem;border-bottom:1px solid var(--acento);margin-right:.34rem}
+.portada-mapa{min-width:0;transform:rotate(.8deg);max-width:580px;justify-self:stretch}
+.mapa{width:100%;height:auto;display:block;border:1px solid #b5b4a5}
+.portada-mapa figcaption{display:flex;justify-content:space-between;gap:.6rem;margin-top:.38rem;color:var(--suave);font-size:.61rem;letter-spacing:.14em}
+.buscador{background:var(--claro);border:1px solid var(--linea);border-top:3px solid var(--tinta);padding:clamp(1rem,2.6vw,2rem)}
+.buscador-titulo{display:flex;justify-content:space-between;align-items:flex-end;gap:.65rem;margin-bottom:1.2rem}
+.buscador-titulo .micro{margin-bottom:.35rem;color:var(--acento)}
+.duracion{color:var(--teal);font-size:.79rem;border-bottom:1px solid #699385;white-space:nowrap;padding-bottom:.2rem}
+.campos{display:grid;grid-template-columns:1.45fr 1fr 1fr .85fr auto;gap:.8rem;align-items:end}
+.boton{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:44px;padding:.57rem .95rem;border:1px solid var(--tinta);color:var(--tinta);font-size:.88rem;font-weight:700;line-height:1.26;background:transparent;cursor:pointer;border-radius:2px;text-align:center}
+.boton:hover{background:#eae2d2}
+.boton.primario{background:var(--acento);border-color:var(--acento);color:#fff}
+.boton.primario:hover{background:#7e2e1d;border-color:#7e2e1d}
+.boton.exito{background:var(--teal);border-color:var(--teal);color:#fff}
+.enlace{cursor:pointer;background:none;border:0;padding:.5rem 0;font-weight:700;text-decoration:underline;text-underline-offset:4px;color:inherit;text-align:left}
+.regla-abajo{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem;margin:1.3rem 0 1.9rem}
+.regla-abajo>div{border-top:1px solid var(--linea);padding-top:.65rem}
+.regla-abajo p{font-size:.82rem;color:var(--suave);margin-top:.15rem}
+.pie{border-top:1px solid var(--linea);background:#eee7d7;margin-top:auto}
+.pie-fila{padding:.95rem 0;color:#48514c;font-size:.73rem}
+.pie .enlace{flex:none}
+.demo{border-top:1px dashed var(--linea);padding:1rem 0 1.3rem;display:grid;grid-template-columns:minmax(210px,300px) 1fr;align-items:end;gap:1.15rem;font-size:.83rem}
+.demo p{max-width:65ch}
+@media(max-width:930px){.campos{grid-template-columns:repeat(2,minmax(0,1fr))}.campos .boton{grid-column:1/-1;justify-self:start}.portada{gap:1.6rem}}
+@media(max-width:640px){.marco{width:calc(100% - 32px)}.cabecera-fila{min-height:62px;gap:.55rem}.logo{width:142px}.nav-sitio{gap:.65rem;font-size:.69rem;white-space:nowrap}.portada{grid-template-columns:1fr;padding-top:1.35rem}.portada-mapa{display:none}.linea-edicion{font-size:.55rem}.regla-abajo{grid-template-columns:1fr;gap:.6rem}.pie-fila{flex-wrap:wrap;gap:.3rem}.demo{grid-template-columns:1fr}.campos{gap:.75rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media print{.cabecera,.pie,.salto,.no-print{display:none!important}body{background:#fff;color:#000}.marco{width:100%}}
