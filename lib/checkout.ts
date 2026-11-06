@@ -75,7 +75,11 @@ export function autorizar(token: unknown, clave: unknown, escenario: Escenario, 
 
 export function confirmar(recibo: unknown, id: unknown, ahora = Date.now()): Confirmacion {
   const pago = verificar<Recibo>("pago", recibo);
-  if (pago.id !== id || pago.vence <= ahora) throw new Error("La autorización ya no se puede usar. Revisá la reserva para reintentar.");
+  if (pago.id !== id) throw new Error("La autorización pertenece a otra reserva.");
+  if (pago.vence <= ahora) return {
+    emitida: false, proveedor: "Pasarela simulada", etapa: "Autorización",
+    detalle: "La autorización venció y se liberó. Podés revalidar la reserva y volver a intentar.", liberados: [pago.pago],
+  };
   const vuelo = referencia("VUE", pago.pago);
   const hotel = referencia("HOT", pago.pago);
   if (pago.escenario === "parcial") {

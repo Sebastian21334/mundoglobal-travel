@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Asistencia, Busqueda, Hotel, Oferta, Vuelo } from "@/lib/dominio";
 import { solicitar } from "@/lib/http";
@@ -8,7 +8,8 @@ import { actualizar } from "@/lib/storage";
 
 export function Buscador() {
   const router = useRouter();
-  const inicio = useRef(Date.now());
+  const inicio = useRef<number | null>(null);
+  useEffect(() => { inicio.current = Date.now(); }, []);
   const ocupado = useRef(false);
   const [busqueda, setBusqueda] = useState<Busqueda>(() => {
     const ida = sumarDias(isoDia(Date.now()), 35);
@@ -23,6 +24,7 @@ export function Buscador() {
     if (ocupado.current) return;
     const invalidacion = errorBusqueda(busqueda);
     if (invalidacion) { setError(invalidacion); return; }
+    const desde = inicio.current ?? Date.now();
     ocupado.current = true;
     setCargando(true);
     setError("");
@@ -37,7 +39,7 @@ export function Buscador() {
       actualizar(datos => ({
         ...datos, borrador: { id, catalogo: { vuelos, hoteles, asistencias }, seleccion },
         reservas: { ...datos.reservas, [id]: {
-          id, oferta, estado: "cotizada", cotizacionMs: Date.now() - inicio.current,
+          id, oferta, estado: "cotizada", cotizacionMs: Date.now() - desde,
           historial: [{ estado: "cotizada", fecha: new Date().toISOString(), detalle: "Vuelo, hotel y asistencia cotizados en un paquete." }],
         } },
       }));

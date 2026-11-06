@@ -2,7 +2,8 @@ export async function solicitar<T>(ruta: string, datos: object, signal?: AbortSi
   const response = await fetch("/api/" + ruta, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(datos), signal,
   });
-  const json = await response.json();
+  const json = await response.json().catch(() => null);
+  if (!json) throw new Error("No pudimos leer la respuesta del servicio. Volvé a intentar.");
   if (!response.ok) throw new Error(json.error ?? "No pudimos completar la operación. Intentá otra vez.");
   return json as T;
 }
