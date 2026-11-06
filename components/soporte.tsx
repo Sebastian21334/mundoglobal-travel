@@ -17,8 +17,14 @@ export function Soporte() {
   const reservas = Object.values(datos.reservas);
   const casos = Object.values(datos.casos).reverse();
   const abiertas = casos.filter(caso => !caso.cerrado);
-  const emitidas = reservas.filter(reserva => reserva.emisionMs !== undefined);
-  const porcentaje = emitidas.length ? Math.round(100 * emitidas.filter(r => r.emisionMs! <= 300_000).length / emitidas.length) : null;
+  const elegibles = reservas.filter(reserva => reserva.historial.some(evento => evento.estado === "pago_autorizado"));
+  const emitidas = elegibles.filter(reserva => reserva.emisionMs !== undefined);
+  const enPlazo = emitidas.filter(reserva => reserva.emisionMs! <= 300_000).length;
+  const porcentaje = elegibles.length ? Math.round(100 * enPlazo / elegibles.length) : null;
+  const pendientes = elegibles.length - emitidas.length;
+  const cambiosCerrados = casos.filter(caso => !caso.automatico && caso.etapa === "Solicitud de cambio" && caso.cerrado);
+  const mediaCambios = cambiosCerrados.length ? duracion(cambiosCerrados.reduce((suma, caso) =>
+    suma + Date.parse(caso.cerrado!) - Date.parse(caso.creado), 0) / cambiosCerrados.length) : "Sin cambios cerrados";
   const media = reservas.length ? duracion(reservas.reduce((suma, reserva) => suma + reserva.cotizacionMs, 0) / reservas.length) : "Sin cotizaciones";
   const revision = reservas.filter(reserva => reserva.estado === "en_revision");
   const filtrados = filtro === "todos" ? casos : casos.filter(caso => filtro === "abiertos" ? !caso.cerrado : Boolean(caso.cerrado));
@@ -35,10 +41,11 @@ export function Soporte() {
     {!listo ? <p role="status">Cargando indicadores…</p> : <>
       <dl className="indicadores">
         <div><dt>Tiempo medio de cotización</dt><dd>{media}</dd><p>Objetivo ≤ 10 min · {reservas.length} cotizaciones</p></div>
-        <div><dt>Emisiones en ≤ 5 min</dt><dd>{porcentaje === null ? "Sin emisiones" : porcentaje + " %"}</dd><p>Desde la autorización · {emitidas.length} emisiones</p></div>
+        <div><dt>Emisiones en ≤ 5 min</dt><dd>{porcentaje === null ? "Sin autorizaciones" : porcentaje + " %"}</dd><p>Objetivo ≥ 90 % · {enPlazo} de {elegibles.length} reservas autorizadas</p><p>{pendientes} autorizadas pendientes de emisión</p></div>
         <div><dt>Casos abiertos</dt><dd>{abiertas.length}</dd><p>{casos.length - abiertas.length} cerrados</p></div>
       </dl>
       <section className="panel mt-6"><p className="micro acento">OPERACIONES PENDIENTES</p><h2>Reservas en revisión</h2>
+        <p className="nota mt-2">Tiempo medio de cambios cerrados: <strong>{mediaCambios}</strong>. Objetivo ≤ 20 min.</p>
         {revision.length ? <ul className="lista-alertas">{revision.map(reserva => <li key={reserva.id}>
           <Link href={"/reserva/" + reserva.id} className="enlace">{reserva.id} ↗</Link><p>{reserva.historial.at(-1)?.detalle}</p>
         </li>)}</ul> : <p className="nota mt-2">No hay reservas en revisión.</p>}

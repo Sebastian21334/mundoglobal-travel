@@ -80,7 +80,7 @@ export function PantallaPago({ id }: { id?: string }) {
       </section>
       <aside className="resumen">
         <p className="micro acento">PASARELA SIMULADA</p><h2>{reintento ? "Nuevo intento" : "Autorización"}</h2>
-        <div className="total"><span>Importe del grupo</span><strong>{usd(precios.total)}</strong></div>
+        <div className="total"><span>Importe de la reserva</span><strong>{usd(precios.total)}</strong></div>
         <p className="nota">La pasarela simula la autorización. El importe se captura en la simulación cuando se confirman los tres servicios.</p>
         {escenario !== "normal" && escenario !== "tarifa" && <p className="micro mt-3 mb-3">Escenario · {escenarios[escenario]}</p>}
         {iniciada && <p className="nota mb-3">Hay un intento iniciado. Podés continuarlo con la misma referencia.</p>}

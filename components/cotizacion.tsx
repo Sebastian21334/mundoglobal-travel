@@ -89,7 +89,7 @@ export function Cotizador() {
     <div className="titulo-fila"><div><p className="micro acento">PUJ / {reserva.id}</p><h1>Tu paquete a Punta Cana</h1></div>
       <Vigencia hasta={reserva.oferta.cotizacion.vence}/></div>
     <p className="bajada">{origenes[busqueda.origen]} · {fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros · {dias} noches</p>
-    <div className="acceso-resumen"><div><span className="micro">TOTAL DEL GRUPO</span><strong aria-live="polite">{usd(precios.total)}</strong></div><a href="#resumen-cotizacion" className="boton">Ver resumen ↓</a></div>
+    <div className="acceso-resumen"><div><span className="micro">TOTAL DE LA RESERVA</span><strong aria-live="polite">{usd(precios.total)}</strong></div><a href="#resumen-cotizacion" className="boton">Ver resumen ↓</a></div>
     <div className="distribucion">
       <div className="opciones">
         <fieldset disabled={ocupado || Boolean(cambio)}><legend><span>01 /</span> Vuelo ida y vuelta</legend>
@@ -118,7 +118,7 @@ export function Cotizador() {
       <aside id="resumen-cotizacion" tabIndex={-1} className="resumen" aria-label="Resumen de cotización">
         <p className="micro acento">UNA SOLA RESERVA</p><h2>Resumen</h2>
         <dl className="desglose"><div><dt>Vuelo</dt><dd>{usd(precios.vuelo)}</dd></div><div><dt>Hotel</dt><dd>{usd(precios.hotel)}</dd></div><div><dt>Asistencia</dt><dd>{usd(precios.asistencia)}</dd></div></dl>
-        <div className="total" aria-live="polite"><span>Total del grupo</span><strong key={precios.total}>{usd(precios.total)}</strong></div>
+        <div className="total" aria-live="polite"><span>Total de la reserva</span><strong key={precios.total}>{usd(precios.total)}</strong></div>
         {cambio && <div className="aviso" aria-live="polite" data-testid="cambio-tarifa">
           <h3>Cambió la tarifa aérea</h3><p>{cambio.detalle}</p>
           <p>Antes <del>{usd(cambio.anterior)}</del></p><p>Ahora <strong>{usd(cambio.oferta.cotizacion.precios.total)}</strong></p>

@@ -1,6 +1,6 @@
 # MundoGlobal Travel
 
-Prototipo transaccional a medida del Grupo R para Reingeniería de Procesos de Negocio, UTN FRVM, TPI 2026. El piloto permite cotizar, reservar y consultar un viaje a Punta Cana con salida desde Córdoba o Buenos Aires. Todos los proveedores, medios de pago, tarifas y documentos son simulados.
+Prototipo del Grupo R para Reingeniería de Procesos de Negocio, UTN FRVM, TPI 2026. Demuestra el flujo de la Acción 1, Plataforma web transaccional. El informe propone configurar una plataforma de reservas existente para la implantación (opción B). Este prototipo reproduce su alcance funcional con servicios simulados. El piloto permite cotizar, reservar y consultar un viaje a Punta Cana con salida desde Córdoba o Buenos Aires. Todos los proveedores, medios de pago, tarifas y documentos son simulados.
 
 ## Ejecutar
 
