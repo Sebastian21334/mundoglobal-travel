@@ -10,6 +10,7 @@ const sans = Public_Sans({ subsets: ["latin"], variable: "--type-sans", display:
 export const metadata: Metadata = {
   title: { default: "MundoGlobal Travel · Punta Cana", template: "%s · MundoGlobal Travel" },
   description: "Cotizá vuelos, hotel All Inclusive y asistencia al viajero en un solo paquete de demostración.",
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
