@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { origenes } from "@/lib/datos/catalogos";
+import { codigoDestino, destinos } from "@/lib/datos/destinos";
 import type { Oferta, Seleccion, Validacion } from "@/lib/dominio";
 import { solicitar } from "@/lib/http";
 import { guardarValidacion } from "@/lib/operacion";
@@ -26,6 +27,8 @@ export function Cotizador() {
   </main>;
 
   const { busqueda } = reserva.oferta.cotizacion;
+  const codigo = codigoDestino(busqueda);
+  const destino = destinos[codigo];
   const { catalogo, seleccion, cambio } = borrador;
   const recargo = reserva.oferta.cotizacion.seleccion.vuelo === seleccion.vuelo ? reserva.oferta.cotizacion.recargo : 0;
   const precios = calcularPrecios(busqueda, catalogo, seleccion, recargo);
@@ -51,10 +54,10 @@ export function Cotizador() {
       if (renovar || !mismaSeleccion(reserva.oferta.cotizacion.seleccion, seleccion)) {
         const oferta = await solicitar<Oferta>("cotizar", { busqueda, seleccion, anterior: reserva.oferta.token, renovar });
         actual = { ...reserva, oferta };
-        guardarReserva(actual);
+        if (!guardarReserva(actual, datos.generacion)) return;
       }
       if (renovar) {
-        actualizar(d => ({ ...d, borrador: d.borrador?.id === actual.id ? { ...d.borrador, cambio: undefined } : d.borrador }));
+        actualizar(d => ({ ...d, borrador: d.borrador?.id === actual.id ? { ...d.borrador, cambio: undefined } : d.borrador }), datos.generacion);
         return;
       }
       const resultado = await solicitar<Validacion>("validar", { token: actual.oferta.token, escenario: leer().escenario });
@@ -63,9 +66,8 @@ export function Cotizador() {
         actualizar(d => ({
           ...d, escenario: "normal", reservas: { ...d.reservas, [actual.id]: anotada },
           borrador: d.borrador?.id === actual.id ? { ...d.borrador, cambio: resultado } : d.borrador,
-        }));
-      } else {
-        guardarValidacion(actual, resultado.oferta, "Tarifas y cupos validados con los tres proveedores.");
+        }), datos.generacion);
+      } else if (guardarValidacion(actual, resultado.oferta, "Tarifas y cupos validados con los tres proveedores.", datos.generacion)) {
         router.push("/pago?id=" + reserva.id);
       }
     } catch (fallo) {
@@ -80,13 +82,12 @@ export function Cotizador() {
     if (!reserva || bloqueo.current) return;
     if (oferta.cotizacion.vence <= Date.now()) { setError("La oferta venció. Actualizá los precios antes de continuar."); return; }
     bloqueo.current = true;
-    guardarValidacion(reserva, oferta, detalle);
-    router.push("/pago?id=" + reserva.id);
+    if (guardarValidacion(reserva, oferta, detalle, datos.generacion)) router.push("/pago?id=" + reserva.id);
   }
 
   return <main id="contenido" className="marco interior">
     <Pasos actual={cambio ? 1 : 0}/>
-    <div className="titulo-fila"><div><p className="micro acento">PUJ / {reserva.id}</p><h1>Tu paquete a Punta Cana</h1></div>
+    <div className="titulo-fila"><div><p className="micro acento">{codigo} / {reserva.id}</p><h1>Tu paquete a {destino.nombre}</h1></div>
       <Vigencia hasta={reserva.oferta.cotizacion.vence}/></div>
     <p className="bajada">{origenes[busqueda.origen]} · {fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros · {dias} noches</p>
     <div className="acceso-resumen"><div><span className="micro">TOTAL DE LA RESERVA</span><strong aria-live="polite">{usd(precios.total)}</strong></div><a href="#resumen-cotizacion" className="boton">Ver resumen ↓</a></div>
@@ -102,7 +103,7 @@ export function Cotizador() {
         <fieldset disabled={ocupado || Boolean(cambio)}><legend><span>02 /</span> Hotel All Inclusive</legend>
           {catalogo.hoteles.map(item => <label key={item.id} className="opcion opcion-hotel">
             <input type="radio" name="hotel" checked={seleccion.hotel === item.id} onChange={() => elegir("hotel", item.id)}/>
-            <span className={"muestra muestra-" + item.id} aria-hidden="true"/>
+            <span className={"muestra muestra-" + item.id.split("-").at(-1)} aria-hidden="true"/>
             <span className="opcion-cuerpo"><strong>{item.nombre}</strong><span>{item.zona} · {item.estrellas} estrellas</span><span>{item.incluye}</span><span>{item.politica}</span></span>
             <span className="opcion-precio">{usd(item.precio)}<small>por noche y viajero, base doble</small></span>
           </label>)}

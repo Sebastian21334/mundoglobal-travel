@@ -19,9 +19,9 @@ export function Viajes() {
       <Link className="boton primario mt-4" href="/#buscador">Armar un paquete</Link>
     </section> : <ul className="registros" aria-label="Reservas guardadas">
       {viajes.map(viaje => {
-        const { busqueda, origen, precios } = detalleViaje(viaje);
+        const { busqueda, origen, precios, destino } = detalleViaje(viaje);
         return <li key={viaje.id}><div><p className="micro acento">{viaje.id} / {estados[viaje.estado]}</p>
-          <h2>{origen} → Punta Cana</h2><p>{fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros · {usd(precios.total)}</p></div>
+          <h2>{origen} → {destino.nombre}</h2><p>{fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros · {usd(precios.total)}</p></div>
           <Link className="boton" href={"/mis-viajes/" + viaje.id}>Ver viaje <span aria-hidden="true">↗</span></Link>
         </li>;
       })}
@@ -48,14 +48,14 @@ export function Detalle({ id }: { id: string }) {
       id: numero, reserva: id, etapa: tipo, proveedor: "Soporte Digital",
       detalle: detalle.trim(), creado: new Date().toISOString(), automatico: false,
     };
-    actualizar(d => ({ ...d, casos: { ...d.casos, [numero]: caso } }));
+    if (!actualizar(d => ({ ...d, casos: { ...d.casos, [numero]: caso } }), datos.generacion)) return;
     setDetalle("");
     setMensaje("Se creó el caso " + numero + ". Podés seguirlo en esta sección.");
   }
 
   return <main id="contenido" className="marco interior">
     <Link href="/mis-viajes" className="enlace">← Mis viajes</Link>
-    <div className="titulo-fila"><div><p className="micro acento mt-4">{id} / {estados[reserva.estado]}</p><h1>Tu viaje a Punta Cana</h1></div></div>
+    <div className="titulo-fila"><div><p className="micro acento mt-4">{id} / {estados[reserva.estado]}</p><h1>Tu viaje a {viaje.destino.nombre}</h1></div></div>
     <p className="bajada">{viaje.origen} · {fechaCorta(viaje.busqueda.ida)} al {fechaCorta(viaje.busqueda.vuelta)} · {viaje.estadia} noches · {viaje.busqueda.pasajeros} viajeros</p>
     {!emitida && <div className="aviso">
       <h3>{estados[reserva.estado]}</h3><p>{reserva.historial.at(-1)?.detalle}</p>

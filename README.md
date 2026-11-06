@@ -1,6 +1,6 @@
 # MundoGlobal Travel
 
-Prototipo del Grupo R para Reingeniería de Procesos de Negocio, UTN FRVM, TPI 2026. Demuestra el flujo de la Acción 1, Plataforma web transaccional. El informe propone configurar una plataforma de reservas existente para la implantación (opción B). Este prototipo reproduce su alcance funcional con servicios simulados. El piloto permite cotizar, reservar y consultar un viaje a Punta Cana con salida desde Córdoba o Buenos Aires. Todos los proveedores, medios de pago, tarifas y documentos son simulados.
+Prototipo del Grupo R para Reingeniería de Procesos de Negocio, UTN FRVM, TPI 2026. Demuestra el flujo de la Acción 1, Plataforma web transaccional. El informe propone configurar una plataforma de reservas existente para la implantación (opción B). Este prototipo reproduce su alcance funcional con servicios simulados. Punta Cana fue el destino del piloto original. El catálogo ampliado permite cotizar, reservar y consultar viajes a Punta Cana, Cancún, Aruba y Porto de Galinhas con salida desde Córdoba o Buenos Aires. Todos los proveedores, medios de pago, tarifas y documentos son simulados.
 
 ## Ejecutar
 
@@ -29,6 +29,8 @@ El modo demostración se abre en el pie o con **Alt + Shift + D**. Seleccionalo 
 | Pago rechazado | La reserva queda en revisión y se abre un caso de autorización. El viajero puede reintentar. |
 | Confirmación parcial | Vuelo y hotel responden, pero falla asistencia. Se compensan las confirmaciones y la autorización. |
 | Recuperación tras reintento | La primera captura falla y se abre un caso. Usá **Reintentar reserva** y confirmá el nuevo intento. Se emite con el mismo localizador y se cierra el caso automático. |
+
+En **Mi perfil → Restablecer demo**, podés confirmar el borrado de cotizaciones, reservas, casos y conversaciones de MundoGlobal Travel guardados en ese navegador.
 
 ## Implementación
 

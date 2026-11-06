@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { catalogo } from "./datos/catalogos";
+import { codigoDestino } from "./datos/destinos";
 import type { Busqueda, Confirmacion, Cotizacion, Escenario, Oferta, Pago, Seleccion, Validacion } from "./dominio";
 import { escenarios } from "./dominio";
 import { calcularPrecios, errorBusqueda } from "./precios";
@@ -24,14 +25,15 @@ export function cotizar(busqueda: Busqueda, seleccion: Seleccion, anterior?: unk
   const previa = anterior ? verificar<Cotizacion>("cotizacion", anterior) : undefined;
   if (previa && previa.vence <= ahora && !renovar) throw new Error("La cotización venció. Actualizá los precios para continuar.");
   if (previa && (previa.busqueda.ida !== busqueda.ida || previa.busqueda.vuelta !== busqueda.vuelta ||
-      previa.busqueda.origen !== busqueda.origen || previa.busqueda.pasajeros !== busqueda.pasajeros)) {
-    throw new Error("Iniciá otra búsqueda para cambiar las fechas, el origen o los viajeros.");
+      previa.busqueda.origen !== busqueda.origen || previa.busqueda.pasajeros !== busqueda.pasajeros ||
+      codigoDestino(previa.busqueda) !== codigoDestino(busqueda))) {
+    throw new Error("Iniciá otra búsqueda para cambiar el destino, las fechas, el origen o los viajeros.");
   }
   const recargo = previa?.seleccion.vuelo === seleccion?.vuelo ? previa.recargo : 0;
-  const precios = calcularPrecios(busqueda, catalogo(busqueda.origen, busqueda.ida), seleccion, recargo);
+  const precios = calcularPrecios(busqueda, catalogo(busqueda), seleccion, recargo);
   return empaquetar({
     id: previa?.id ?? "MGT-2026-" + randomBytes(3).toString("hex").toUpperCase(),
-    busqueda, seleccion, precios, recargo, vence: renovar ? ahora + vigenciaMs : previa?.vence ?? ahora + vigenciaMs,
+    busqueda: { ...busqueda, destino: codigoDestino(busqueda) }, seleccion, precios, recargo, vence: renovar ? ahora + vigenciaMs : previa?.vence ?? ahora + vigenciaMs,
     validada: false,
   });
 }
@@ -42,7 +44,7 @@ export function validar(token: unknown, escenario: Escenario, ahora = Date.now()
     return { tipo: "lista", oferta: empaquetar({ ...actual, validada: true }) };
   }
   const { busqueda, seleccion } = actual;
-  const opciones = catalogo(busqueda.origen, busqueda.ida);
+  const opciones = catalogo(busqueda);
   const recargo = 3500;
   const alterna = opciones.vuelos.find(vuelo => vuelo.id !== seleccion.vuelo)!;
   const alternativa = { ...seleccion, vuelo: alterna.id };

@@ -8,7 +8,7 @@ const serif = Instrument_Serif({ weight: ["400"], style: ["normal", "italic"], s
 const sans = Public_Sans({ subsets: ["latin"], variable: "--type-sans", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "MundoGlobal Travel · Punta Cana", template: "%s · MundoGlobal Travel" },
+  title: { default: "MundoGlobal Travel · Paquetes de viaje", template: "%s · MundoGlobal Travel" },
   description: "Cotizá vuelos, hotel All Inclusive y asistencia al viajero en un solo paquete de demostración.",
   icons: { icon: "/icon.svg" },
 };

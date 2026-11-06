@@ -28,8 +28,7 @@ export function PantallaReserva({ id }: { id: string }) {
     setCargando(true);
     setError("");
     try {
-      await prepararReintento(reserva);
-      router.push("/pago?id=" + id);
+      if (await prepararReintento(reserva, datos.generacion)) router.push("/pago?id=" + id);
     } catch (fallo) {
       setError(fallo instanceof Error ? fallo.message : "No pudimos preparar el reintento.");
     } finally {

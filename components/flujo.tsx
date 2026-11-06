@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { estados, type Reserva } from "@/lib/dominio";
+import { codigoDestino, destinos } from "@/lib/datos/destinos";
 import { fechaHora, usd } from "@/lib/precios";
 
 export function Pasos({ actual }: { actual: number }) {
@@ -53,12 +54,13 @@ function Codigo({ id }: { id: string }) {
 
 export function Boleto({ reserva, origen, fechas }: { reserva: Reserva; origen: string; fechas: string }) {
   const { busqueda, precios } = reserva.oferta.cotizacion;
+  const codigo = codigoDestino(busqueda);
   return <article className="boleto" aria-label="Comprobante de reserva">
     <div className="boleto-cuerpo">
       <div className="boleto-enc"><span>MUNDOGLOBAL TRAVEL</span><span>RESERVA EMITIDA</span></div>
       <div className="boleto-ruta"><div><span>ORIGEN</span><strong>{busqueda.origen}</strong><p>{origen}</p></div>
       <span className="boleto-flecha" aria-hidden="true">⟶</span>
-      <div><span>DESTINO</span><strong>PUJ</strong><p>Punta Cana</p></div></div>
+      <div><span>DESTINO</span><strong>{codigo}</strong><p>{destinos[codigo].nombre}</p></div></div>
       <div className="boleto-datos"><div><span>FECHAS</span><p>{fechas}</p></div><div><span>VIAJEROS</span><p>{busqueda.pasajeros}</p></div><div><span>TOTAL PAGADO</span><p>{usd(precios.total)}</p></div></div>
     </div>
     <div className="boleto-talon"><span className="micro">LOCALIZADOR</span><strong>{reserva.id}</strong><Codigo id={reserva.id}/><span>VUELO + HOTEL + ASISTENCIA</span></div>

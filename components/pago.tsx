@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { catalogo, origenes } from "@/lib/datos/catalogos";
+import { codigoDestino, destinos } from "@/lib/datos/destinos";
 import { escenarios, type Oferta, type Validacion } from "@/lib/dominio";
 import { solicitar } from "@/lib/http";
 import { procesarPago } from "@/lib/operacion";
@@ -25,7 +26,8 @@ export function PantallaPago({ id }: { id?: string }) {
   </main>;
 
   const { busqueda, seleccion, precios, vence } = reserva.oferta.cotizacion;
-  const items = elegidos(catalogo(busqueda.origen, busqueda.ida), seleccion);
+  const items = elegidos(catalogo(busqueda), seleccion);
+  const destino = destinos[codigoDestino(busqueda)];
   const reintento = reserva.historial.some(evento => evento.estado === "en_revision");
   const escenario = reserva.intento?.escenario ?? (reintento ? "recuperacion" : datos.escenario);
   const iniciada = Boolean(reserva.intento);
@@ -56,7 +58,7 @@ export function PantallaPago({ id }: { id?: string }) {
       const oferta = await solicitar<Oferta>("cotizar", { busqueda, seleccion, anterior: reserva.oferta.token, renovar: true });
       const resultado = await solicitar<Validacion>("validar", { token: oferta.token, escenario: "normal" });
       if (resultado.tipo === "lista") guardarReserva(registrar({ ...reserva, oferta: resultado.oferta, intento: undefined },
-        "Se renovó la vigencia. El viajero debe autorizar el importe actualizado.", new Date().toISOString()));
+        "Se renovó la vigencia. El viajero debe autorizar el importe actualizado.", new Date().toISOString()), datos.generacion);
     } catch (fallo) {
       setError(fallo instanceof Error ? fallo.message : "No pudimos actualizar los precios.");
     } finally {
@@ -68,7 +70,7 @@ export function PantallaPago({ id }: { id?: string }) {
   return <main id="contenido" className="marco interior">
     <Pasos actual={2}/>
     <div className="titulo-fila"><div><p className="micro acento">PAGO / {reserva.id}</p><h1>Revisá antes de pagar</h1></div><Vigencia hasta={vence}/></div>
-    <p className="bajada">De {origenes[busqueda.origen]} a Punta Cana · {fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros</p>
+    <p className="bajada">De {origenes[busqueda.origen]} a {destino.nombre} · {fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros</p>
     <div className="distribucion">
       <section className="panel" aria-label="Detalle del paquete">
         <p className="micro acento">SERVICIOS QUE VAS A RESERVAR</p>

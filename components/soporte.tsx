@@ -31,7 +31,7 @@ export function Soporte() {
 
   function cerrar(caso: Caso) {
     const fecha = new Date().toISOString();
-    actualizar(d => ({ ...d, casos: { ...d.casos, [caso.id]: { ...caso, cerrado: fecha, resolucion: "Revisión finalizada por Soporte Digital." } } }));
+    if (!actualizar(d => ({ ...d, casos: { ...d.casos, [caso.id]: { ...caso, cerrado: fecha, resolucion: "Revisión finalizada por Soporte Digital." } } }), datos.generacion)) return;
     setAviso("Caso " + caso.id + " cerrado.");
   }
 

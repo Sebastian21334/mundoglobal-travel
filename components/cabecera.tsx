@@ -13,7 +13,7 @@ export function Cabecera() {
     <div className="marco cabecera-fila">
       <Link href="/" aria-label="MundoGlobal Travel, inicio"><Marca /></Link>
       <nav aria-label="Principal" className="nav-sitio">
-        <Link href="/mis-viajes">Mis viajes</Link><Link href="/soporte">Soporte digital <span aria-hidden="true">↗</span></Link>
+        <Link href="/mis-viajes">Mis viajes</Link><Link href="/soporte" aria-label="Soporte digital">Soporte</Link><Link href="/perfil" className="nav-perfil">Mi perfil</Link>
       </nav>
     </div>
   </header>;

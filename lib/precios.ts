@@ -1,3 +1,4 @@
+import { esDestino } from "./datos/destinos";
 import type { Busqueda, Catalogo, Precios, Seleccion } from "./dominio";
 
 const dia = 86_400_000;
@@ -16,7 +17,8 @@ function fechaValida(fecha: unknown): fecha is string {
 
 export function errorBusqueda(datos: unknown, hoy = isoDia(Date.now())): string | null {
   if (!datos || typeof datos !== "object") return "Completá los datos del viaje.";
-  const { origen, ida, vuelta, pasajeros } = datos as Partial<Busqueda>;
+  const { origen, destino, ida, vuelta, pasajeros } = datos as Partial<Busqueda>;
+  if (destino !== undefined && !esDestino(destino)) return "Elegí un destino disponible.";
   if (origen !== "COR" && origen !== "EZE") return "Elegí Córdoba o Buenos Aires como origen.";
   if (!fechaValida(ida) || !fechaValida(vuelta) || ida < hoy) return "Elegí fechas válidas desde hoy.";
   const duracion = noches({ origen, ida, vuelta, pasajeros: 1 });

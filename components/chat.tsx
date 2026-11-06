@@ -54,7 +54,7 @@ export function Chat({ id }: { id: string }) {
       id: crypto.randomUUID(), autor: agente.nombre, texto: responder(limpio, indice),
       fecha: new Date(disponible).toISOString(), disponible,
     };
-    actualizar(d => ({ ...d, chats: { ...d.chats, [id]: [...(d.chats[id] ?? []), nuevo, respuesta] } }));
+    if (!actualizar(d => ({ ...d, chats: { ...d.chats, [id]: [...(d.chats[id] ?? []), nuevo, respuesta] } }), datos.generacion)) return;
     setHora(ahora);
     setTexto("");
   }

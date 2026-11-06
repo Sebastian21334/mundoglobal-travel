@@ -1,7 +1,8 @@
 export type Origen = "COR" | "EZE";
-export type Busqueda = { origen: Origen; ida: string; vuelta: string; pasajeros: number };
+export type Destino = "PUJ" | "CUN" | "AUA" | "REC";
+export type Busqueda = { origen: Origen; destino?: Destino; ida: string; vuelta: string; pasajeros: number };
 export type Seleccion = { vuelo: string; hotel: string; asistencia: string };
-export type Vuelo = { id: string; linea: string; codigo: string; salida: string; llegada: string; escala: string; duracion: string; equipaje: string; precio: number };
+export type Vuelo = { id: string; linea: string; codigo: string; salida: string; llegada: string; regreso?: string; escala: string; duracion: string; equipaje: string; precio: number };
 export type Hotel = { id: string; nombre: string; estrellas: number; zona: string; incluye: string; politica: string; precio: number };
 export type Asistencia = { id: string; nombre: string; cobertura: number; incluye: string; precio: number };
 export type Catalogo = { vuelos: Vuelo[]; hoteles: Hotel[]; asistencias: Asistencia[] };

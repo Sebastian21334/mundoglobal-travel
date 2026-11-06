@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { autorizar, confirmar, cotizar, validar } from "../lib/checkout";
 import { catalogo } from "../lib/datos/catalogos";
+import { destinosDisponibles } from "../lib/datos/destinos";
+import { firmar } from "../lib/tokens";
+import { detalleViaje } from "../lib/viaje";
 import type { Busqueda, Reserva, Seleccion } from "../lib/dominio";
 import { calcularPrecios, errorBusqueda, isoDia, sumarDias } from "../lib/precios";
 import { transicionar } from "../lib/reserva";
@@ -18,7 +21,7 @@ function ofertaValidada() {
 
 describe("cotización", () => {
   it("calcula en centavos por viajero, noche y día", () => {
-    const ofertas = catalogo("EZE", ida);
+    const ofertas = catalogo(busqueda);
     const p = calcularPrecios(busqueda, ofertas, seleccion);
     expect(p).toEqual({
       vuelo: ofertas.vuelos[0].precio * 2, hotel: 8900 * 7 * 2,
@@ -81,5 +84,41 @@ describe("reserva", () => {
     expect(fallo).toMatchObject({ emitida: false, etapa: "Captura" });
     if (!fallo.emitida) expect(fallo.liberados).toHaveLength(4);
     expect(confirmar(segundo.recibo, oferta.cotizacion.id).emitida).toBe(true);
+  });
+});
+
+describe("catálogo por destino", () => {
+  it.each(destinosDisponibles)("cotiza y conserva %s hasta la emisión", destino => {
+    const consulta = { ...busqueda, destino };
+    const { vuelos, hoteles } = catalogo(consulta);
+    expect(vuelos).toHaveLength(3);
+    expect(hoteles).toHaveLength(3);
+    const servicio = { vuelo: vuelos[0].id, hotel: hoteles[0].id, asistencia: "completa" };
+    const oferta = cotizar(consulta, servicio);
+    const validacion = validar(oferta.token, "normal");
+    if (validacion.tipo !== "lista") throw new Error("Se esperaba una tarifa estable.");
+    const pago = autorizar(validacion.oferta.token, clave, "normal", false);
+    if (!pago.aprobado) throw new Error("No se autorizó el pago.");
+    expect(confirmar(pago.recibo, oferta.cotizacion.id).emitida).toBe(true);
+    expect(detalleViaje({
+      id: oferta.cotizacion.id, oferta: validacion.oferta, estado: "emitida", historial: [], cotizacionMs: 0,
+    }).codigo).toBe(destino);
+  });
+
+  it("bloquea servicios de otro destino y cambios de destino en una cotización firmada", () => {
+    const cancun: Busqueda = { ...busqueda, destino: "CUN" };
+    expect(errorBusqueda({ ...busqueda, destino: "XXX" })).toMatch(/destino disponible/);
+    expect(() => cotizar(cancun, seleccion)).toThrow(/servicio/);
+    expect(() => cotizar(cancun, seleccion, cotizar(busqueda, seleccion).token)).toThrow(/otra búsqueda/);
+  });
+
+  it("mantiene las reservas y cotizaciones anteriores como Punta Cana", () => {
+    const { cotizacion } = cotizar(busqueda, seleccion);
+    const anterior = { ...cotizacion, busqueda };
+    const resultado = validar(firmar("cotizacion", anterior), "normal");
+    expect(resultado.tipo).toBe("lista");
+    expect(detalleViaje({
+      id: cotizacion.id, oferta: resultado.oferta, estado: "emitida", historial: [], cotizacionMs: 0,
+    }).destino.nombre).toBe("Punta Cana");
   });
 });
