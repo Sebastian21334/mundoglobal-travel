@@ -5,7 +5,6 @@ import { destinos } from "@/lib/datos/destinos";
 
 export default function Home() {
   return <main id="contenido" className="marco inicio">
-    <div className="linea-edicion"><span>GUÍA DE RESERVA / CARIBE Y BRASIL</span><span>CUATRO DESTINOS · DOS CIUDADES DE SALIDA</span></div>
     <section className="portada">
       <div className="portada-texto">
         <p className="micro acento">PAQUETES DE PLAYA / TEMPORADA ABIERTA</p>

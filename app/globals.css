@@ -32,8 +32,7 @@ fieldset{min-width:0}
 .salto:focus{transform:none}
 .solo-lectores{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}
 .inicio{padding-top:1.4rem}
-.linea-edicion,.micro{font-family:var(--sans);font-weight:730;letter-spacing:.135em;font-size:.68rem;text-transform:uppercase}
-.linea-edicion{border-bottom:1px solid var(--linea);padding:.25rem 0 .62rem;display:flex;justify-content:space-between;gap:1rem;color:var(--suave)}
+.micro{font-family:var(--sans);font-weight:730;letter-spacing:.135em;font-size:.68rem;text-transform:uppercase}
 .acento{color:var(--acento)}
 .portada{display:grid;grid-template-columns:1.15fr .92fr;gap:clamp(1.7rem,5vw,5rem);align-items:center;padding:clamp(1.8rem,4vw,3.25rem) 0 1.85rem}
 .portada-texto{min-width:0}
@@ -70,7 +69,7 @@ fieldset{min-width:0}
 .demo{border-top:1px dashed var(--linea);padding:1rem 0 1.3rem;display:grid;grid-template-columns:minmax(210px,300px) 1fr;align-items:end;gap:1.15rem;font-size:.83rem}
 .demo p{max-width:65ch}
 @media(max-width:930px){.campos{grid-template-columns:repeat(2,minmax(0,1fr))}.campos .boton{grid-column:1/-1;justify-self:start}.portada{gap:1.6rem}}
-@media(max-width:640px){.marco{width:calc(100% - 32px)}.cabecera-fila{min-height:62px;gap:.55rem}.logo{width:142px}.nav-sitio{gap:.65rem;font-size:.69rem;white-space:nowrap}.portada{grid-template-columns:1fr;padding-top:1.35rem}.portada-foto{aspect-ratio:2/1}.linea-edicion{font-size:.55rem}.regla-abajo{grid-template-columns:1fr;gap:.6rem}.pie-fila{flex-wrap:wrap;gap:.3rem}.demo{grid-template-columns:1fr}.campos{gap:.75rem}}
+@media(max-width:640px){.marco{width:calc(100% - 32px)}.cabecera-fila{min-height:62px;gap:.55rem}.logo{width:142px}.nav-sitio{gap:.65rem;font-size:.69rem;white-space:nowrap}.portada{grid-template-columns:1fr;padding-top:1.35rem}.portada-foto{aspect-ratio:2/1}.regla-abajo{grid-template-columns:1fr;gap:.6rem}.pie-fila{flex-wrap:wrap;gap:.3rem}.demo{grid-template-columns:1fr}.campos{gap:.75rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 @media print{.cabecera,.pie,.salto,.no-print{display:none!important}body{background:#fff;color:#000}.marco{width:100%}}
 
