@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { catalogo } from "./datos/catalogos";
 import { codigoDestino } from "./datos/destinos";
-import type { Busqueda, Confirmacion, Cotizacion, Escenario, Oferta, Pago, Seleccion, Validacion } from "./dominio";
+import type { Busqueda, Confirmacion, Cotizacion, Cupos, Escenario, Oferta, Pago, Seleccion, Validacion } from "./dominio";
 import { escenarios } from "./dominio";
 import { calcularPrecios, errorBusqueda } from "./precios";
 import { firmar, referencia, verificar } from "./tokens";
@@ -38,8 +38,14 @@ export function cotizar(busqueda: Busqueda, seleccion: Seleccion, anterior?: unk
   });
 }
 
+function cuposDisponibles({ id, busqueda }: Cotizacion): Cupos {
+  const semilla = [...id].reduce((suma, letra) => suma + letra.charCodeAt(0), 0);
+  return { vuelo: busqueda.pasajeros + 2 + semilla % 8, hotel: 1 + semilla % 5 };
+}
+
 export function validar(token: unknown, escenario: Escenario, ahora = Date.now()): Validacion {
-  const actual = cotizacionVigente(token, ahora);
+  const vigente = cotizacionVigente(token, ahora);
+  const actual = { ...vigente, cupos: cuposDisponibles(vigente) };
   if (escenario !== "tarifa" || actual.recargo > 0 || actual.validada) {
     return { tipo: "lista", oferta: empaquetar({ ...actual, validada: true }) };
   }

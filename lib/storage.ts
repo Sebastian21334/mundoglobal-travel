@@ -1,17 +1,12 @@
 "use client";
 import { useMemo, useSyncExternalStore } from "react";
-import type { Borrador, Caso, Escenario, Mensaje, Reserva } from "./dominio";
-
-type Datos = {
-  reservas: Record<string, Reserva>; casos: Record<string, Caso>; chats: Record<string, Mensaje[]>;
-  borrador?: Borrador; escenario: Escenario; generacion: string;
-};
+import type { Datos, Reserva } from "./dominio";
 
 const clave = "mundoglobal.tpi.v1";
 const claveReinicio = "mundoglobal.tpi.reset";
 const aviso = "mundoglobal:actualizado";
 const inicial = "inicial";
-const vacio: Datos = { reservas: {}, casos: {}, chats: {}, escenario: "normal", generacion: inicial };
+const vacio: Datos = { reservas: {}, casos: {}, chats: {}, avisos: [], cuentas: {}, escenario: "normal", generacion: inicial };
 const vacioSerializado = inicial + "|";
 let memoria = vacioSerializado;
 let soloMemoria = false;
@@ -36,7 +31,7 @@ function decodificar(valor: string): Datos {
     const datos = JSON.parse(contenido) as Partial<Datos>;
     // Ignorá escrituras rezagadas de otra pestaña que todavía tenía una operación en curso.
     if ((datos.generacion ?? inicial) !== generacion) return { ...vacio, generacion };
-    return { ...vacio, ...datos, generacion, reservas: datos.reservas ?? {}, casos: datos.casos ?? {}, chats: datos.chats ?? {} };
+    return { ...vacio, ...datos, generacion, reservas: datos.reservas ?? {}, casos: datos.casos ?? {}, chats: datos.chats ?? {}, avisos: datos.avisos ?? [], cuentas: datos.cuentas ?? {} };
   } catch {
     return { ...vacio, generacion };
   }

@@ -9,7 +9,7 @@ import { estados } from "@/lib/dominio";
 import { prepararReintento } from "@/lib/operacion";
 import { fechaCorta } from "@/lib/precios";
 import { useDatos } from "@/lib/storage";
-import { Boleto, Historial, Pasos, SinDatos } from "./flujo";
+import { Boleto, EstadoServicios, Historial, Pasos, RegistroPago, SinDatos } from "./flujo";
 
 export function PantallaReserva({ id }: { id: string }) {
   const { datos, listo } = useDatos();
@@ -41,7 +41,7 @@ export function PantallaReserva({ id }: { id: string }) {
   }
 
   return <main id="contenido" className="marco interior">
-    <Pasos actual={emitida ? 3 : 2}/>
+    <Pasos actual={emitida ? 4 : 3}/>
     <p className="micro acento">RESERVA / {id}</p>
     <h1>{emitida ? "Tu viaje está confirmado." : reserva.estado === "en_revision" ? "Tu reserva quedó en revisión." : "Estado de tu reserva"}</h1>
     {emitida ? <><p className="bajada">Los tres servicios están confirmados. Tenés los documentos del viaje en el portal.</p>
@@ -59,6 +59,7 @@ export function PantallaReserva({ id }: { id: string }) {
         </div>
         {error && <p role="alert" className="error">{error}</p>}
       </div>}
+    <div className="reserva-estado"><EstadoServicios reserva={reserva}/><RegistroPago reserva={reserva}/></div>
     <details className="desplegable mt-7"><summary>Historial de la reserva</summary><Historial reserva={reserva}/></details>
   </main>;
 }

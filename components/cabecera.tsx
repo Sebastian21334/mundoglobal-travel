@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavCuenta } from "./nav-cuenta";
 
 export function Marca() {
   return <svg viewBox="0 0 244 47" className="logo" role="img" aria-label="MundoGlobal Travel">
@@ -13,7 +14,7 @@ export function Cabecera() {
     <div className="marco cabecera-fila">
       <Link href="/" aria-label="MundoGlobal Travel, inicio"><Marca /></Link>
       <nav aria-label="Principal" className="nav-sitio">
-        <Link href="/mis-viajes">Mis viajes</Link><Link href="/soporte" aria-label="Soporte digital">Soporte</Link><Link href="/perfil" className="nav-perfil">Mi perfil</Link>
+        <Link href="/mis-viajes">Mis viajes</Link><Link href="/soporte" aria-label="Soporte digital">Soporte</Link><NavCuenta />
       </nav>
     </div>
   </header>;

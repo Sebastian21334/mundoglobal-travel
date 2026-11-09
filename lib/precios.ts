@@ -4,6 +4,7 @@ import type { Busqueda, Catalogo, Precios, Seleccion } from "./dominio";
 const dia = 86_400_000;
 export const formatoUSD = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export const usd = (centavos: number) => "USD " + formatoUSD.format(centavos / 100);
+export const cantidadViajeros = (cantidad: number) => cantidad + (cantidad === 1 ? " viajero" : " viajeros");
 export const isoDia = (fecha: number) => new Date(fecha).toISOString().slice(0, 10);
 export const sumarDias = (fecha: string, dias: number) => isoDia(Date.parse(fecha + "T00:00:00Z") + dias * dia);
 export const noches = ({ ida, vuelta }: Busqueda) => (Date.parse(vuelta) - Date.parse(ida)) / dia;

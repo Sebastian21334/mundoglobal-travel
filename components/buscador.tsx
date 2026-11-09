@@ -8,6 +8,8 @@ import { errorBusqueda, isoDia, noches, sumarDias } from "@/lib/precios";
 import { actualizar, leer } from "@/lib/storage";
 import { Destinos } from "./destinos";
 
+const proveedores = ["Aerolíneas", "Hoteles All Inclusive", "Asistencia al viajero"];
+
 export function Buscador() {
   const router = useRouter();
   const inicio = useRef<number | null>(null);
@@ -20,6 +22,7 @@ export function Buscador() {
   });
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [respondieron, setRespondieron] = useState<string[]>([]);
   const duracion = noches(busqueda);
 
   function elegirDestino(destino: Destino, enfocar = false) {
@@ -39,10 +42,16 @@ export function Buscador() {
     ocupado.current = true;
     setCargando(true);
     setError("");
+    setRespondieron([]);
+    const consultar = async <T,>(ruta: string, proveedor: string) => {
+      const respuesta = await solicitar<T>(ruta, busqueda);
+      setRespondieron(actuales => [...actuales, proveedor]);
+      return respuesta;
+    };
     try {
       const [vuelos, hoteles, asistencias] = await Promise.all([
-        solicitar<Vuelo[]>("vuelos", busqueda), solicitar<Hotel[]>("hoteles", busqueda),
-        solicitar<Asistencia[]>("asistencia", busqueda),
+        consultar<Vuelo[]>("vuelos", proveedores[0]), consultar<Hotel[]>("hoteles", proveedores[1]),
+        consultar<Asistencia[]>("asistencia", proveedores[2]),
       ]);
       const seleccion = { vuelo: vuelos[0].id, hotel: hoteles[0].id, asistencia: asistencias[0].id };
       const oferta = await solicitar<Oferta>("cotizar", { busqueda, seleccion });
@@ -86,6 +95,9 @@ export function Buscador() {
         </select></label>
         <button type="submit" className="boton primario" disabled={cargando}>{cargando ? "Cotizando…" : "Cotizar paquete"} <span aria-hidden="true">↗</span></button>
       </fieldset>
+      {cargando && <ul className="consulta-proveedores">{proveedores.map(proveedor => <li key={proveedor} className={respondieron.includes(proveedor) ? "respondio" : undefined}>
+        {proveedor}<span>{respondieron.includes(proveedor) ? "Respondió" : "Consultando…"}</span>
+      </li>)}</ul>}
       {error && <p role="alert" className="error">{error}</p>}
       <p className="solo-lectores" role="status">{cargando ? "Consultando vuelo, hotel y asistencia." : ""}</p>
     </form>

@@ -1,14 +1,9 @@
 "use client";
 import { useEffect, useState, type FormEvent } from "react";
+import { agentes } from "@/lib/agentes";
 import type { Mensaje } from "@/lib/dominio";
 import { fechaHora } from "@/lib/precios";
 import { actualizar, useDatos } from "@/lib/storage";
-
-const agentes = [
-  { nombre: "Marina Ríos", turno: "09:00 a 17:00 ART" },
-  { nombre: "Tomás Vidal", turno: "17:00 a 01:00 ART" },
-  { nombre: "Julia Sosa", turno: "01:00 a 09:00 ART" },
-];
 
 const sinMensajes: Mensaje[] = [];
 
@@ -26,7 +21,18 @@ function responder(texto: string, indice: number) {
   return respuestas[indice % respuestas.length];
 }
 
-export function Chat({ id }: { id: string }) {
+export function ChatFlotante({ id }: { id: string }) {
+  const [abierto, setAbierto] = useState(false);
+  return <div className="chat-flotante no-print">
+    {abierto && <div id="chat-compra" className="chat-flotante-panel"><Chat id={id} momento="compra"/></div>}
+    <button type="button" className="boton exito chat-flotante-boton" aria-expanded={abierto} aria-controls="chat-compra" title="Hablá con Soporte Digital"
+      aria-label={abierto ? "Cerrar chat con Soporte Digital" : "Abrir chat con Soporte Digital"} onClick={() => setAbierto(!abierto)}>
+      {abierto ? <span aria-hidden="true">×</span> : <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M4 5.5h16v11H10l-4.5 3.5v-3.5H4z" strokeLinejoin="round"/></svg>}
+    </button>
+  </div>;
+}
+
+export function Chat({ id, momento = "viaje" }: { id: string; momento?: "compra" | "viaje" }) {
   const { datos } = useDatos();
   const [texto, setTexto] = useState("");
   const [hora, setHora] = useState(() => Date.now());
@@ -60,7 +66,7 @@ export function Chat({ id }: { id: string }) {
   }
 
   return <section className="panel" aria-labelledby="chat">
-    <p className="micro acento">ATENCIÓN EN DESTINO</p><h2 id="chat">Chat de asistencia</h2>
+    <p className="micro acento">{momento === "compra" ? "ATENCIÓN DURANTE LA COMPRA" : "ATENCIÓN DURANTE EL VIAJE"}</p><h2 id="chat">Chat con Soporte Digital</h2>
     <p className="nota">{agente.nombre} · Guardia {agente.turno} · Chat simulado</p>
     <div className="chat-mensajes" role="log" aria-label="Conversación de asistencia" aria-live="polite">
       {!mensajes.length && <p className="nota">Hola, soy {agente.nombre.split(" ")[0]}. Tengo tu reserva {id} a mano. ¿Qué necesitás revisar?</p>}
