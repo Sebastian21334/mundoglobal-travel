@@ -1,8 +1,10 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { origenes } from "@/lib/datos/catalogos";
+import { codigoDestino, destinos } from "@/lib/datos/destinos";
 import { estados } from "@/lib/dominio";
 import { prepararReintento } from "@/lib/operacion";
 import { fechaCorta } from "@/lib/precios";
@@ -18,6 +20,7 @@ export function PantallaReserva({ id }: { id: string }) {
   const reserva = datos.reservas[id];
   if (!reserva) return <SinDatos listo={listo} mensaje="Esta reserva no está guardada en el dispositivo." />;
   const { busqueda } = reserva.oferta.cotizacion;
+  const destino = destinos[codigoDestino(busqueda)];
   const emitida = reserva.estado === "emitida";
   const casos = Object.values(datos.casos).filter(caso => caso.reserva === id);
   const ultimo = reserva.historial.at(-1);
@@ -42,6 +45,7 @@ export function PantallaReserva({ id }: { id: string }) {
     <p className="micro acento">RESERVA / {id}</p>
     <h1>{emitida ? "Tu viaje está confirmado." : reserva.estado === "en_revision" ? "Tu reserva quedó en revisión." : "Estado de tu reserva"}</h1>
     {emitida ? <><p className="bajada">Los tres servicios están confirmados. Tenés los documentos del viaje en el portal.</p>
+      <Image src={destino.foto.src} alt={destino.foto.alt} width={960} height={640} sizes="(max-width: 640px) 94vw, 820px" className="destino-foto foto-confirmacion"/>
       <Boleto reserva={reserva} origen={origenes[busqueda.origen]} fechas={fechaCorta(busqueda.ida) + " al " + fechaCorta(busqueda.vuelta)}/>
       <div className="acciones"><Link href={"/mis-viajes/" + id} className="boton exito">Ver itinerario y documentos <span aria-hidden="true">↗</span></Link></div></>
       : <div className="panel mt-4"><p className="micro acento">{estados[reserva.estado]}</p>

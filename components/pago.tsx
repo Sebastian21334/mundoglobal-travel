@@ -10,6 +10,7 @@ import { procesarPago } from "@/lib/operacion";
 import { elegidos, fechaCorta, noches, usd } from "@/lib/precios";
 import { registrar } from "@/lib/reserva";
 import { guardarReserva, leer, useDatos } from "@/lib/storage";
+import { FotoHotel } from "./foto-hotel";
 import { Pasos, SinDatos, Vigencia } from "./flujo";
 
 export function PantallaPago({ id }: { id?: string }) {
@@ -74,6 +75,10 @@ export function PantallaPago({ id }: { id?: string }) {
     <div className="distribucion">
       <section className="panel" aria-label="Detalle del paquete">
         <p className="micro acento">SERVICIOS QUE VAS A RESERVAR</p>
+        <figure className="estadia-foto">
+          <FotoHotel id={items.hotel.id} className="destino-foto" sizes="(max-width: 640px) 90vw, 450px"/>
+          <figcaption className="nota">Foto de referencia del alojamiento simulado</figcaption>
+        </figure>
         <dl className="lista-servicios">
           <div><dt>01 / Vuelo</dt><dd><strong>{items.vuelo.linea} · {items.vuelo.codigo}</strong><br/>{items.vuelo.salida} → {items.vuelo.llegada} · {items.vuelo.escala} · {items.vuelo.equipaje}</dd></div>
           <div><dt>02 / Hotel</dt><dd><strong>{items.hotel.nombre}</strong><br/>{noches(busqueda)} noches · {items.hotel.zona} · {items.hotel.politica}</dd></div>

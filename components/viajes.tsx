@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { estados, type Caso } from "@/lib/dominio";
@@ -6,6 +7,7 @@ import { fechaCorta, fechaHora, usd } from "@/lib/precios";
 import { actualizar, useDatos } from "@/lib/storage";
 import { detalleViaje, documentos, itinerario } from "@/lib/viaje";
 import { Chat } from "./chat";
+import { FotoHotel } from "./foto-hotel";
 import { Historial, SinDatos } from "./flujo";
 
 export function Viajes() {
@@ -20,8 +22,10 @@ export function Viajes() {
     </section> : <ul className="registros" aria-label="Reservas guardadas">
       {viajes.map(viaje => {
         const { busqueda, origen, precios, destino } = detalleViaje(viaje);
-        return <li key={viaje.id}><div><p className="micro acento">{viaje.id} / {estados[viaje.estado]}</p>
-          <h2>{origen} → {destino.nombre}</h2><p>{fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros · {usd(precios.total)}</p></div>
+        return <li key={viaje.id}><div className="viaje-ficha">
+          <Image src={destino.foto.src} alt={destino.foto.alt} width={960} height={640} sizes="(max-width: 570px) 96px, 140px" className="viaje-miniatura"/>
+          <div><p className="micro acento">{viaje.id} / {estados[viaje.estado]}</p>
+          <h2>{origen} → {destino.nombre}</h2><p>{fechaCorta(busqueda.ida)} al {fechaCorta(busqueda.vuelta)} · {busqueda.pasajeros} viajeros · {usd(precios.total)}</p></div></div>
           <Link className="boton" href={"/mis-viajes/" + viaje.id}>Ver viaje <span aria-hidden="true">↗</span></Link>
         </li>;
       })}
@@ -71,6 +75,10 @@ export function Detalle({ id }: { id: string }) {
             </li>)}</ol>
           </section>
           <section className="panel"><p className="micro acento">INFORMACIÓN DE TU RESERVA</p><h2>Alertas</h2>
+            <figure className="estadia-foto">
+              <FotoHotel id={viaje.hotel.id} className="destino-foto" sizes="(max-width: 640px) 90vw, 450px"/>
+              <figcaption className="nota">Foto de referencia del alojamiento simulado</figcaption>
+            </figure>
             <ul className="lista-alertas"><li><strong>Horario aéreo confirmado</strong><p>{viaje.vuelo.codigo} sale a las {viaje.vuelo.salida}. Presentate en el aeropuerto 3 h antes.</p></li>
               <li><strong>Ingreso al hotel</strong><p>{viaje.hotel.nombre} recibe huéspedes a partir de las 15:00 del {fechaCorta(viaje.busqueda.ida)}. Mostrá el voucher al llegar.</p></li></ul>
           </section>

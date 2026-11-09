@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { escenarios, type Escenario } from "@/lib/dominio";
 import { actualizar, useDatos } from "@/lib/storage";
@@ -23,6 +24,7 @@ export function Pie() {
     <div className="marco">
       <div className="pie-fila">
         <p>Prototipo académico. Datos y proveedores simulados. UTN FRVM, TPI 2026, Grupo R</p>
+        <Link href="/creditos-fotos" className="enlace">Créditos de fotos</Link>
         <button className="enlace" type="button" aria-expanded={abierto} aria-controls="panel-demo" onClick={() => setAbierto(!abierto)}>
           Modo demostración <span aria-hidden="true">{abierto ? "−" : "+"}</span>
         </button>

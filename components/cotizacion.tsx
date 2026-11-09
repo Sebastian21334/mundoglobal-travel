@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -10,6 +11,7 @@ import { guardarValidacion } from "@/lib/operacion";
 import { calcularPrecios, elegidos, fechaCorta, mismaSeleccion, noches, usd } from "@/lib/precios";
 import { registrar } from "@/lib/reserva";
 import { actualizar, guardarReserva, leer, useDatos } from "@/lib/storage";
+import { FotoHotel } from "./foto-hotel";
 import { Pasos, SinDatos, Vigencia } from "./flujo";
 
 export function Cotizador() {
@@ -101,9 +103,10 @@ export function Cotizador() {
           </label>)}
         </fieldset>
         <fieldset disabled={ocupado || Boolean(cambio)}><legend><span>02 /</span> Hotel All Inclusive</legend>
+          <p className="nota mt-2 mb-1">Fotos de referencia para los hoteles simulados.</p>
           {catalogo.hoteles.map(item => <label key={item.id} className="opcion opcion-hotel">
             <input type="radio" name="hotel" checked={seleccion.hotel === item.id} onChange={() => elegir("hotel", item.id)}/>
-            <span className={"muestra muestra-" + item.id.split("-").at(-1)} aria-hidden="true"/>
+            <FotoHotel id={item.id} className="hotel-miniatura" sizes="(max-width: 570px) 225px, 144px"/>
             <span className="opcion-cuerpo"><strong>{item.nombre}</strong><span>{item.zona} · {item.estrellas} estrellas</span><span>{item.incluye}</span><span>{item.politica}</span></span>
             <span className="opcion-precio">{usd(item.precio)}<small>por noche y viajero, base doble</small></span>
           </label>)}
@@ -117,6 +120,7 @@ export function Cotizador() {
         </fieldset>
       </div>
       <aside id="resumen-cotizacion" tabIndex={-1} className="resumen" aria-label="Resumen de cotización">
+        <Image src={destino.foto.src} alt={destino.foto.alt} width={960} height={640} sizes="(max-width: 850px) 90vw, 290px" className="destino-foto resumen-foto"/>
         <p className="micro acento">UNA SOLA RESERVA</p><h2>Resumen</h2>
         <dl className="desglose"><div><dt>Vuelo</dt><dd>{usd(precios.vuelo)}</dd></div><div><dt>Hotel</dt><dd>{usd(precios.hotel)}</dd></div><div><dt>Asistencia</dt><dd>{usd(precios.asistencia)}</dd></div></dl>
         <div className="total" aria-live="polite"><span>Total de la reserva</span><strong key={precios.total}>{usd(precios.total)}</strong></div>
